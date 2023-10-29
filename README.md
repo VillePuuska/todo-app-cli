@@ -13,4 +13,4 @@ The list is saved to and read from a .json file. You can have multiple files for
 
 ## Usage
 
-To be determined later.
+To be determined later...
