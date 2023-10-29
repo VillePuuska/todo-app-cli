@@ -11,9 +11,13 @@ type ListItem struct {
 	Finished    time.Time // finished timestamp.
 }
 
-func Test() ListItem {
+func Test(i ...int) ListItem {
+	id := 1
+	if len(i) > 0 {
+		id = i[0]
+	}
 	return ListItem{
-		Id:          1,
+		Id:          id,
 		Description: "Test list item",
 		Status:      "backlog",
 		Added:       time.Now(),
