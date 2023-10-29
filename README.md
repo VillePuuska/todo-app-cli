@@ -9,7 +9,7 @@ Simple app to manage a todo-list. Items in the list have
 - started work timestamp,
 - finished timestamp.
 
-The list is saved to and read from a .json file. You can have multiple files for different todo-lists.
+A todo-list is saved to and read from a .json file. Your todo-lists are called projects. You have a single .json file for each project and of course can have multiple projects.
 
 ## Usage
 
