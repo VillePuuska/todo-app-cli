@@ -19,3 +19,7 @@
 
 # Go workspace file
 go.work
+
+# .txt and .cfg are used for storing local data and configurations
+*.txt
+*.cfg
