@@ -8,5 +8,5 @@ import (
 
 func main() {
 	fmt.Println("main called")
-	fmt.Println(app_utils.Message())
+	fmt.Println(app_utils.Test())
 }
