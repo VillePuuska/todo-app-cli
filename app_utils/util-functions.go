@@ -33,6 +33,19 @@ func AddItem(Description string, TodoList *[]ListItem) {
 	*TodoList = append(*TodoList, new_item)
 }
 
+func DeleteItem(id int, TodoList *[]ListItem) {
+	deletion_index := findIndex(id, TodoList)
+	if deletion_index == -1 {
+		return
+	}
+	*TodoList = append((*TodoList)[:deletion_index], (*TodoList)[deletion_index+1:]...)
+	for i := 0; i < len(*TodoList); i++ {
+		if (*TodoList)[i].Id > id {
+			(*TodoList)[i].Id--
+		}
+	}
+}
+
 func Test(find_id int, TodoList *[]ListItem) int {
 	return findIndex(find_id, TodoList)
 }
