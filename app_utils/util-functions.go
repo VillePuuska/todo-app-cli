@@ -21,24 +21,18 @@ func findIndex(find_id int, TodoList *[]ListItem) int {
 }
 
 func AddItem(Description string, TodoList *[]ListItem) {
-
-}
-
-func Test(i ...int) ListItem {
-	id := 1
-	if len(i) > 0 {
-		id = i[0]
-	}
-	return ListItem{
-		Id:          id,
-		Description: "Test list item",
+	new_id := len(*TodoList)
+	new_item := ListItem{
+		Id:          new_id,
+		Description: Description,
 		Status:      "backlog",
 		Added:       time.Now(),
 		Started:     time.Time{},
 		Finished:    time.Time{},
 	}
+	*TodoList = append(*TodoList, new_item)
 }
 
-func Test2(find_id int, TodoList *[]ListItem) int {
+func Test(find_id int, TodoList *[]ListItem) int {
 	return findIndex(find_id, TodoList)
 }

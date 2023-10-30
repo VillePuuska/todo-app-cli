@@ -13,25 +13,16 @@ func main() {
 	var TodoList []app_utils.ListItem
 
 	for i := 0; i < 4; i++ {
-		TodoList = append(TodoList, app_utils.Test())
+		app_utils.AddItem("Test list item", &TodoList)
 		if i != 3 {
 			time.Sleep(time.Second)
 		}
 	}
 	fmt.Println(printList(TodoList))
 
-	TodoList = []app_utils.ListItem{}
-	for i := 0; i < 4; i++ {
-		TodoList = append(TodoList, app_utils.Test(i+1))
-		if i != 3 {
-			time.Sleep(time.Second)
-		}
-	}
-	fmt.Println(printList(TodoList))
-
-	fmt.Println(app_utils.Test2(0, &TodoList))
-	fmt.Println(app_utils.Test2(3, &TodoList))
-	fmt.Println(app_utils.Test2(4, &TodoList))
+	fmt.Println(app_utils.Test(0, &TodoList))
+	fmt.Println(app_utils.Test(3, &TodoList))
+	fmt.Println(app_utils.Test(4, &TodoList))
 }
 
 func printList(TodoList []app_utils.ListItem) string {
