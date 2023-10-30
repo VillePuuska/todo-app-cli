@@ -28,6 +28,10 @@ func main() {
 		}
 	}
 	fmt.Println(printList(TodoList))
+
+	fmt.Println(app_utils.Test2(0, &TodoList))
+	fmt.Println(app_utils.Test2(3, &TodoList))
+	fmt.Println(app_utils.Test2(4, &TodoList))
 }
 
 func printList(TodoList []app_utils.ListItem) string {

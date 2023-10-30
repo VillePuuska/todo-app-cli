@@ -11,6 +11,19 @@ type ListItem struct {
 	Finished    time.Time // finished timestamp.
 }
 
+func findIndex(find_id int, TodoList *[]ListItem) int {
+	for i := 0; i < len(*TodoList); i++ {
+		if (*TodoList)[i].Id == find_id {
+			return i
+		}
+	}
+	return -1
+}
+
+func AddItem(Description string, TodoList *[]ListItem) {
+
+}
+
 func Test(i ...int) ListItem {
 	id := 1
 	if len(i) > 0 {
@@ -24,4 +37,8 @@ func Test(i ...int) ListItem {
 		Started:     time.Time{},
 		Finished:    time.Time{},
 	}
+}
+
+func Test2(find_id int, TodoList *[]ListItem) int {
+	return findIndex(find_id, TodoList)
 }
