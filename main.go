@@ -24,6 +24,19 @@ func main() {
 	fmt.Println(app_utils.Test(3, &TodoList))
 	fmt.Println(app_utils.Test(4, &TodoList))
 
+	app_utils.UpdateStatus(0, "asd", &TodoList)
+	fmt.Println(printList(TodoList))
+	app_utils.UpdateStatus(0, "done", &TodoList)
+	fmt.Println(printList(TodoList))
+	app_utils.UpdateStatus(1, "working on", &TodoList)
+	fmt.Println(printList(TodoList))
+	time.Sleep(time.Second)
+	app_utils.UpdateStatus(1, "done", &TodoList)
+	fmt.Println(printList(TodoList))
+	time.Sleep(time.Second)
+	app_utils.UpdateStatus(1, "backlog", &TodoList)
+	fmt.Println(printList(TodoList))
+
 	app_utils.DeleteItem(0, &TodoList)
 	fmt.Println(printList(TodoList))
 	app_utils.DeleteItem(6, &TodoList)
@@ -35,7 +48,7 @@ func main() {
 func printList(TodoList []app_utils.ListItem) string {
 	res := ""
 	for _, item := range TodoList {
-		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + "\n"
+		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + " " + item.Started.String() + " " + item.Finished.String() + "\n"
 	}
 	return res
 }

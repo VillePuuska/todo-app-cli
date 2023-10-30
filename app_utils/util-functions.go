@@ -46,6 +46,30 @@ func DeleteItem(id int, TodoList *[]ListItem) {
 	}
 }
 
+func UpdateStatus(id int, new_status string, TodoList *[]ListItem) {
+	index := findIndex(id, TodoList)
+	if index == -1 {
+		return
+	}
+	if new_status != "backlog" && new_status != "working on" && new_status != "done" {
+		return
+	}
+	(*TodoList)[index].Status = new_status
+	if new_status == "backlog" {
+		(*TodoList)[index].Added = time.Now()
+		(*TodoList)[index].Started = time.Time{}
+		(*TodoList)[index].Finished = time.Time{}
+	} else if new_status == "working on" {
+		(*TodoList)[index].Started = time.Now()
+		(*TodoList)[index].Finished = time.Time{}
+	} else if new_status == "done" {
+		(*TodoList)[index].Finished = time.Now()
+		if (*TodoList)[index].Started == (time.Time{}) {
+			(*TodoList)[index].Started = (*TodoList)[index].Finished
+		}
+	}
+}
+
 func Test(find_id int, TodoList *[]ListItem) int {
 	return findIndex(find_id, TodoList)
 }
