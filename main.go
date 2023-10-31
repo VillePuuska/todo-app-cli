@@ -3,14 +3,29 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
+	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
 	"github.com/VillePuuska/todo-app-cli/app_utils"
 )
 
+const projectpath = "projects"
+
 func main() {
 	fmt.Println("main called")
+
+	_, err := os.Stat(projectpath)
+	if os.IsNotExist(err) {
+		fmt.Println("Creating folder for projects.")
+		err := os.Mkdir(projectpath, 0750)
+		if err != nil && !os.IsExist(err) {
+			log.Fatal(err)
+		}
+	}
+
 	var TodoList []app_utils.ListItem
 
 	for i := 0; i < 4; i++ {
@@ -28,7 +43,7 @@ func main() {
 	json.Unmarshal([]byte(marshaled), &unmarshaled)
 	fmt.Println(printList(unmarshaled))
 
-	app_utils.SaveList(&TodoList, "projects/test_project.json")
+	app_utils.SaveList(&TodoList, filepath.Join(projectpath, "test_project.json"))
 
 	/*
 		fmt.Println(app_utils.Test(0, &TodoList))
