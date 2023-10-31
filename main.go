@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"strconv"
 	"time"
@@ -20,29 +21,38 @@ func main() {
 	}
 	fmt.Println(printList(TodoList))
 
-	fmt.Println(app_utils.Test(0, &TodoList))
-	fmt.Println(app_utils.Test(3, &TodoList))
-	fmt.Println(app_utils.Test(4, &TodoList))
+	// Marshal & Unmarshal testing
+	marshaled, _ := json.Marshal(&TodoList)
+	fmt.Println(string(marshaled))
+	var unmarshaled []app_utils.ListItem
+	json.Unmarshal([]byte(marshaled), &unmarshaled)
+	fmt.Println(printList(unmarshaled))
 
-	app_utils.UpdateStatus(0, "asd", &TodoList)
-	fmt.Println(printList(TodoList))
-	app_utils.UpdateStatus(0, "done", &TodoList)
-	fmt.Println(printList(TodoList))
-	app_utils.UpdateStatus(1, "working on", &TodoList)
-	fmt.Println(printList(TodoList))
-	time.Sleep(time.Second)
-	app_utils.UpdateStatus(1, "done", &TodoList)
-	fmt.Println(printList(TodoList))
-	time.Sleep(time.Second)
-	app_utils.UpdateStatus(1, "backlog", &TodoList)
-	fmt.Println(printList(TodoList))
+	/*
+		fmt.Println(app_utils.Test(0, &TodoList))
+		fmt.Println(app_utils.Test(3, &TodoList))
+		fmt.Println(app_utils.Test(4, &TodoList))
 
-	app_utils.DeleteItem(0, &TodoList)
-	fmt.Println(printList(TodoList))
-	app_utils.DeleteItem(6, &TodoList)
-	fmt.Println(printList(TodoList))
-	app_utils.DeleteItem(1, &TodoList)
-	fmt.Println(printList(TodoList))
+		app_utils.UpdateStatus(0, "asd", &TodoList)
+		fmt.Println(printList(TodoList))
+		app_utils.UpdateStatus(0, "done", &TodoList)
+		fmt.Println(printList(TodoList))
+		app_utils.UpdateStatus(1, "working on", &TodoList)
+		fmt.Println(printList(TodoList))
+		time.Sleep(time.Second)
+		app_utils.UpdateStatus(1, "done", &TodoList)
+		fmt.Println(printList(TodoList))
+		time.Sleep(time.Second)
+		app_utils.UpdateStatus(1, "backlog", &TodoList)
+		fmt.Println(printList(TodoList))
+
+		app_utils.DeleteItem(0, &TodoList)
+		fmt.Println(printList(TodoList))
+		app_utils.DeleteItem(6, &TodoList)
+		fmt.Println(printList(TodoList))
+		app_utils.DeleteItem(1, &TodoList)
+		fmt.Println(printList(TodoList))
+	*/
 }
 
 func printList(TodoList []app_utils.ListItem) string {
