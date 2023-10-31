@@ -12,18 +12,23 @@ import (
 	"github.com/VillePuuska/todo-app-cli/app_utils"
 )
 
-const projectpath = "projects"
+const projectpath = "todo-app-cli-projects"
 
 func main() {
 	fmt.Println("main called")
 
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
-		fmt.Println("Creating folder for projects.")
+		fmt.Println("Missing folder for projects. Creating it.")
 		err := os.Mkdir(projectpath, 0750)
-		if err != nil && !os.IsExist(err) {
+		if err != nil {
 			log.Fatal(err)
 		}
+		absolute_path, err := filepath.Abs(projectpath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Path to folder:", absolute_path)
 	}
 
 	var TodoList []app_utils.ListItem
