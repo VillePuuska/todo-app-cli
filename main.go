@@ -28,6 +28,8 @@ func main() {
 	json.Unmarshal([]byte(marshaled), &unmarshaled)
 	fmt.Println(printList(unmarshaled))
 
+	app_utils.SaveList(&TodoList, "projects/test_project.json")
+
 	/*
 		fmt.Println(app_utils.Test(0, &TodoList))
 		fmt.Println(app_utils.Test(3, &TodoList))

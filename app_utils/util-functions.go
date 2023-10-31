@@ -1,6 +1,11 @@
 package app_utils
 
-import "time"
+import (
+	"encoding/json"
+	"log"
+	"os"
+	"time"
+)
 
 type ListItem struct {
 	Id          int       // number for ordering and referring to tasks when editing and deleting
@@ -67,6 +72,22 @@ func UpdateStatus(id int, new_status string, TodoList *[]ListItem) {
 		if (*TodoList)[index].Started == (time.Time{}) {
 			(*TodoList)[index].Started = (*TodoList)[index].Finished
 		}
+	}
+}
+
+func SaveList(TodoList *[]ListItem, filepath string) {
+	/*if _, err := os.Stat(filepath); errors.Is(err, os.ErrNotExist) {
+		f, err := os.Create(filepath)
+		if err != nil {
+			fmt.Println("what is even going on")
+			log.Fatal(err)
+		}
+		f.Close()
+	}*/
+	marshaled, _ := json.Marshal(&TodoList)
+	err := os.WriteFile(filepath, []byte(marshaled), 0666)
+	if err != nil {
+		log.Fatal(err)
 	}
 }
 
