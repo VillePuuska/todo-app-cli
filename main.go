@@ -76,6 +76,14 @@ func main() {
 	app_utils.SaveList(&TodoList, filepath.Join(projectpath, projectname+fileextension))
 	readList := app_utils.ReadList(filepath.Join(projectpath, projectname+fileextension))
 	fmt.Println(listToString(readList))
+
+	fmt.Println("Testing changing id.")
+	app_utils.ChangeId(0, 4, readList)
+	fmt.Println(listToString(readList))
+	app_utils.ChangeId(0, 2, readList)
+	fmt.Println(listToString(readList))
+	app_utils.ChangeId(2, 1, readList)
+	fmt.Println(listToString(readList))
 }
 
 func listToString(TodoList *[]app_utils.ListItem) string {

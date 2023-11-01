@@ -75,6 +75,21 @@ func UpdateStatus(id int, new_status string, TodoList *[]ListItem) {
 	}
 }
 
+func ChangeId(old_id, new_id int, TodoList *[]ListItem) {
+	if old_id < 0 || old_id >= len(*TodoList) || new_id < 0 || new_id >= len(*TodoList) {
+		return
+	}
+	for i := 0; i < len(*TodoList); i++ {
+		if (*TodoList)[i].Id == old_id {
+			(*TodoList)[i].Id = new_id
+		} else if (*TodoList)[i].Id > old_id && (*TodoList)[i].Id <= new_id {
+			(*TodoList)[i].Id--
+		} else if (*TodoList)[i].Id < old_id && (*TodoList)[i].Id >= new_id {
+			(*TodoList)[i].Id++
+		}
+	}
+}
+
 func SaveList(TodoList *[]ListItem, filepath string) {
 	marshaled, _ := json.Marshal(&TodoList)
 	err := os.WriteFile(filepath, []byte(marshaled), 0666)
@@ -88,10 +103,8 @@ func ReadList(filepath string) *[]ListItem {
 	if err != nil {
 		log.Fatal(err)
 	}
-	//fmt.Println(string(data))
 	var unmarshaled []ListItem
 	json.Unmarshal(data, &unmarshaled)
-	//fmt.Println(len(unmarshaled))
 	return &unmarshaled
 }
 
