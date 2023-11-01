@@ -67,6 +67,8 @@ func main() {
 	fmt.Println(listToString(&TodoList))
 	app_utils.UpdateStatus(1, "working on", &TodoList)
 	fmt.Println(listToString(&TodoList))
+	app_utils.UpdateStatus(2, "done", &TodoList)
+	fmt.Println(listToString(&TodoList))
 
 	fmt.Println("Testing deleting an item.")
 	app_utils.DeleteItem(0, &TodoList)
@@ -83,6 +85,20 @@ func main() {
 	app_utils.ChangeId(0, 2, readList)
 	fmt.Println(listToString(readList))
 	app_utils.ChangeId(2, 1, readList)
+	fmt.Println(listToString(readList))
+
+	fmt.Println("Testing sorting.")
+	app_utils.OrderList("asd", readList)
+	fmt.Println(listToString(readList))
+	app_utils.OrderList("id", readList)
+	fmt.Println(listToString(readList))
+	app_utils.OrderList("description", readList)
+	fmt.Println(listToString(readList))
+	app_utils.OrderList("status", readList)
+	fmt.Println(listToString(readList))
+	app_utils.OrderList("added", readList)
+	fmt.Println(listToString(readList))
+	app_utils.OrderList("finished", readList)
 	fmt.Println(listToString(readList))
 }
 

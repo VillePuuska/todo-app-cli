@@ -2,8 +2,11 @@ package app_utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"os"
+	"slices"
+	"strings"
 	"time"
 )
 
@@ -88,6 +91,70 @@ func ChangeId(old_id, new_id int, TodoList *[]ListItem) {
 			(*TodoList)[i].Id++
 		}
 	}
+}
+
+func OrderList(attribute string, TodoList *[]ListItem) {
+	var cmp func(a, b ListItem) int
+	switch strings.ToUpper(attribute) {
+	case "ID":
+		cmp = func(a, b ListItem) int {
+			if a.Id < b.Id {
+				return -1
+			} else if a.Id > b.Id {
+				return 1
+			}
+			return 0
+		}
+	case "DESCRIPTION":
+		cmp = func(a, b ListItem) int {
+			if a.Description < b.Description {
+				return -1
+			} else if a.Description > b.Description {
+				return 1
+			}
+			return 0
+		}
+	case "STATUS":
+		cmp = func(a, b ListItem) int {
+			if a.Status < b.Status {
+				return -1
+			} else if a.Status > b.Status {
+				return 1
+			}
+			return 0
+		}
+	case "ADDED":
+		cmp = func(a, b ListItem) int {
+			if b.Added.After(a.Added) {
+				return -1
+			} else if a.Added.After(b.Added) {
+				return 1
+			}
+			return 0
+		}
+	case "STARTED":
+		cmp = func(a, b ListItem) int {
+			if b.Started.After(a.Started) {
+				return -1
+			} else if a.Started.After(b.Started) {
+				return 1
+			}
+			return 0
+		}
+	case "FINISHED":
+		cmp = func(a, b ListItem) int {
+			if b.Finished.After(a.Finished) {
+				return -1
+			} else if a.Finished.After(b.Finished) {
+				return 1
+			}
+			return 0
+		}
+	default:
+		fmt.Println("Incorrect attribute name.")
+		return
+	}
+	slices.SortStableFunc(*TodoList, cmp)
 }
 
 func SaveList(TodoList *[]ListItem, filepath string) {
