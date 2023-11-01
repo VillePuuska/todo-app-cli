@@ -15,7 +15,8 @@ import (
 const projectpath = "todo-app-cli-projects"
 
 func main() {
-	fmt.Println("main called")
+	projectname := "test_project2"
+	fileextension := ".json"
 
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
@@ -29,6 +30,16 @@ func main() {
 			log.Fatal(err)
 		}
 		fmt.Println("Path to folder:", absolute_path)
+	} else if err != nil {
+		log.Fatal(err)
+	}
+
+	_, err = os.Stat(filepath.Join(projectpath, projectname+fileextension))
+	if os.IsNotExist(err) {
+		fmt.Println("Project does not exist. Add it first.")
+		return
+	} else if err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Println("Adding items to list.")
@@ -62,8 +73,8 @@ func main() {
 	fmt.Println(listToString(&TodoList))
 
 	fmt.Println("Saving and loading the list.")
-	app_utils.SaveList(&TodoList, filepath.Join(projectpath, "test_project.json"))
-	readList := app_utils.ReadList(filepath.Join(projectpath, "test_project.json"))
+	app_utils.SaveList(&TodoList, filepath.Join(projectpath, projectname+fileextension))
+	readList := app_utils.ReadList(filepath.Join(projectpath, projectname+fileextension))
 	fmt.Println(listToString(readList))
 }
 
