@@ -116,12 +116,12 @@ func OrderList(attribute string, TodoList *[]ListItem) {
 		}
 	case "STATUS":
 		cmp = func(a, b ListItem) int {
-			if a.Status < b.Status {
+			if a.Status == b.Status {
+				return 0
+			} else if a.Status == "backlog" || (a.Status == "working on" && b.Status == "done") {
 				return -1
-			} else if a.Status > b.Status {
-				return 1
 			}
-			return 0
+			return 1
 		}
 	case "ADDED":
 		cmp = func(a, b ListItem) int {

@@ -15,7 +15,7 @@ import (
 const projectpath = "todo-app-cli-projects"
 
 func main() {
-	projectname := "test_project2"
+	projectname := "test_project"
 	fileextension := ".json"
 
 	_, err := os.Stat(projectpath)
@@ -100,6 +100,8 @@ func main() {
 	fmt.Println(listToString(readList))
 	app_utils.OrderList("finished", readList)
 	fmt.Println(listToString(readList))
+
+	app_utils.SaveList(readList, filepath.Join(projectpath, projectname+"_sorting"+fileextension))
 }
 
 func listToString(TodoList *[]app_utils.ListItem) string {
