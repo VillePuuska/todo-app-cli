@@ -76,19 +76,23 @@ func UpdateStatus(id int, new_status string, TodoList *[]ListItem) {
 }
 
 func SaveList(TodoList *[]ListItem, filepath string) {
-	/*if _, err := os.Stat(filepath); errors.Is(err, os.ErrNotExist) {
-		f, err := os.Create(filepath)
-		if err != nil {
-			fmt.Println("what is even going on")
-			log.Fatal(err)
-		}
-		f.Close()
-	}*/
 	marshaled, _ := json.Marshal(&TodoList)
 	err := os.WriteFile(filepath, []byte(marshaled), 0666)
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ReadList(filepath string) *[]ListItem {
+	data, err := os.ReadFile(filepath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	//fmt.Println(string(data))
+	var unmarshaled []ListItem
+	json.Unmarshal(data, &unmarshaled)
+	//fmt.Println(len(unmarshaled))
+	return &unmarshaled
 }
 
 func Test(find_id int, TodoList *[]ListItem) int {
