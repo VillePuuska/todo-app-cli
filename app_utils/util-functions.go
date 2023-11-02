@@ -174,7 +174,3 @@ func ReadList(filepath string) *[]ListItem {
 	json.Unmarshal(data, &unmarshaled)
 	return &unmarshaled
 }
-
-func Test(find_id int, TodoList *[]ListItem) int {
-	return findIndex(find_id, TodoList)
-}

@@ -1,12 +1,14 @@
 package main
 
 import (
+	"bufio"
 	"encoding/json"
 	"fmt"
 	"log"
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/VillePuuska/todo-app-cli/app_utils"
@@ -40,6 +42,25 @@ func main() {
 		return
 	} else if err != nil {
 		log.Fatal(err)
+	}
+
+	var user_input string
+loop:
+	for {
+		reader := bufio.NewReader(os.Stdin)
+		fmt.Println("Give me some input to echo: (\"stop\" will end this loop and move on to tests)")
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		switch strings.TrimSuffix(strings.ToLower(user_input), "\n") {
+		case "stop":
+			break loop
+		case "hi":
+			fmt.Print("Well hello!" + "\n\n")
+		default:
+			fmt.Println(user_input)
+		}
 	}
 
 	var TodoList []app_utils.ListItem
