@@ -13,10 +13,10 @@ import (
 )
 
 const projectpath = "todo-app-cli-projects"
+const fileextension = ".json"
 
 func main() {
 	projectname := "test_project"
-	fileextension := ".json"
 
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
@@ -42,40 +42,45 @@ func main() {
 		log.Fatal(err)
 	}
 
-	fmt.Println("Adding items to list.")
 	var TodoList []app_utils.ListItem
+	test(&TodoList)
+}
 
+func test(TodoList *[]app_utils.ListItem) {
+	projectname := "test_project"
+
+	fmt.Println("Adding items to list.")
 	for i := 0; i < 4; i++ {
-		app_utils.AddItem("Test list item "+strconv.Itoa(i), &TodoList)
+		app_utils.AddItem("Test list item "+strconv.Itoa(i), TodoList)
 		if i != 3 {
 			time.Sleep(time.Second)
 		}
 	}
-	fmt.Println(listToString(&TodoList))
+	fmt.Println(listToString(TodoList))
 
 	fmt.Println("Marshaling and Unmarshaling the list.")
-	marshaled, _ := json.Marshal(&TodoList)
+	marshaled, _ := json.Marshal(TodoList)
 	fmt.Println(string(marshaled))
 	var unmarshaled []app_utils.ListItem
 	json.Unmarshal([]byte(marshaled), &unmarshaled)
 	fmt.Println(listToString(&unmarshaled))
 
 	fmt.Println("Testing updating status.")
-	app_utils.UpdateStatus(0, "asd", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(0, "done", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(1, "working on", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(2, "done", &TodoList)
-	fmt.Println(listToString(&TodoList))
+	app_utils.UpdateStatus(0, "asd", TodoList)
+	fmt.Println(listToString(TodoList))
+	app_utils.UpdateStatus(0, "done", TodoList)
+	fmt.Println(listToString(TodoList))
+	app_utils.UpdateStatus(1, "working on", TodoList)
+	fmt.Println(listToString(TodoList))
+	app_utils.UpdateStatus(2, "done", TodoList)
+	fmt.Println(listToString(TodoList))
 
 	fmt.Println("Testing deleting an item.")
-	app_utils.DeleteItem(0, &TodoList)
-	fmt.Println(listToString(&TodoList))
+	app_utils.DeleteItem(0, TodoList)
+	fmt.Println(listToString(TodoList))
 
 	fmt.Println("Saving and loading the list.")
-	app_utils.SaveList(&TodoList, filepath.Join(projectpath, projectname+fileextension))
+	app_utils.SaveList(TodoList, filepath.Join(projectpath, projectname+fileextension))
 	readList := app_utils.ReadList(filepath.Join(projectpath, projectname+fileextension))
 	fmt.Println(listToString(readList))
 
