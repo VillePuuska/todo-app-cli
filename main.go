@@ -7,6 +7,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -18,7 +19,7 @@ const projectpath = "todo-app-cli-projects"
 const fileextension = ".json"
 
 func main() {
-	projectname := "test_project"
+	var projectname string
 
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
@@ -36,39 +37,65 @@ func main() {
 		log.Fatal(err)
 	}
 
-	_, err = os.Stat(filepath.Join(projectpath, projectname+fileextension))
-	if os.IsNotExist(err) {
-		fmt.Println("Project does not exist. Add it first.")
-		return
-	} else if err != nil {
-		log.Fatal(err)
+	files := listProjects()
+	projects := make([]string, 0)
+	for _, project := range *files {
+		if strings.HasSuffix(project, fileextension) {
+			projects = append(projects, project)
+			fmt.Println(len(projects)-1, project)
+		}
 	}
 
 	var user_input string
+	intCheck := regexp.MustCompile("^[0-9]")
 loop:
 	for {
 		reader := bufio.NewReader(os.Stdin)
-		fmt.Println("Give me some input to echo: (\"stop\" will end this loop and move on to tests)")
+		fmt.Println("Give me some input to echo or choose a project with the corresponding integer: (\"stop\" will exit program)")
 		user_input, err = reader.ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
 		switch strings.TrimSuffix(strings.ToLower(user_input), "\n") {
 		case "stop":
-			break loop
+			return
 		case "hi":
 			fmt.Print("Well hello!" + "\n\n")
 		default:
+			if intCheck.MatchString(strings.TrimSuffix(user_input, "\n")) {
+				project_index, err := strconv.Atoi(strings.TrimSuffix(user_input, "\n"))
+				if err != nil {
+					log.Fatal(err)
+				}
+				if project_index >= 0 && project_index < len(projects) {
+					projectname = projects[project_index]
+					break loop
+				}
+			}
 			fmt.Println(user_input)
 		}
 	}
 
 	var TodoList []app_utils.ListItem
-	test(&TodoList)
+	test(&TodoList, projectname)
 }
 
-func test(TodoList *[]app_utils.ListItem) {
-	projectname := "test_project"
+func listProjects() *[]string {
+	f, err := os.Open(projectpath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer f.Close()
+	res, err := f.Readdirnames(0)
+	if err != nil {
+		log.Fatal(err)
+	}
+	return &res
+}
+
+func test(TodoList *[]app_utils.ListItem, projectname string) {
+	fmt.Println("Loading chosen project.")
+	fmt.Println(listToString(app_utils.ReadList(filepath.Join(projectpath, projectname))))
 
 	fmt.Println("Adding items to list.")
 	for i := 0; i < 4; i++ {
@@ -101,8 +128,8 @@ func test(TodoList *[]app_utils.ListItem) {
 	fmt.Println(listToString(TodoList))
 
 	fmt.Println("Saving and loading the list.")
-	app_utils.SaveList(TodoList, filepath.Join(projectpath, projectname+fileextension))
-	readList := app_utils.ReadList(filepath.Join(projectpath, projectname+fileextension))
+	app_utils.SaveList(TodoList, filepath.Join(projectpath, projectname))
+	readList := app_utils.ReadList(filepath.Join(projectpath, projectname))
 	fmt.Println(listToString(readList))
 
 	fmt.Println("Testing changing id.")
@@ -127,7 +154,7 @@ func test(TodoList *[]app_utils.ListItem) {
 	app_utils.OrderList("finished", readList)
 	fmt.Println(listToString(readList))
 
-	app_utils.SaveList(readList, filepath.Join(projectpath, projectname+"_sorting"+fileextension))
+	app_utils.SaveList(readList, filepath.Join(projectpath, "sorting_"+projectname))
 }
 
 func listToString(TodoList *[]app_utils.ListItem) string {
