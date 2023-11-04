@@ -17,6 +17,21 @@ import (
 
 const projectpath = "todo-app-cli-projects"
 const fileextension = ".json"
+const commands = `Possible commands:
+"add item" lets you add an item to the current project,
+"add project" creates a new blank project and switches to it,
+"change id" lets your change the id of an item in the current list, use this to manually order items,
+"change project" lets you change the current project/todo-list,
+"delete item" lets you delete an item from the current project,
+"delete project" lets you delete any of the projects in the project-folder,
+"help" will print this message,
+"reload" loads the current project from its saved file, use this if you want to undo your unsaved changes,
+"save" saves your current project,
+"show" prints the todo-list,
+"sort" lets you order the list by any attribute,
+"stop" or "quit" quits the app,
+"test" runs the hardcoded tests,
+"update item" lets you update the status of an item`
 
 func main() {
 	var projectname string
@@ -76,23 +91,46 @@ loop:
 	TodoList := app_utils.ReadList(filepath.Join(projectpath, projectname))
 	var EmptyList []app_utils.ListItem
 	for {
-		fmt.Println("Commands: \"show\" will print the list, \"test\" will run tests, \"hi\" greet you back, \"stop\" will exit program, anything else will be echoed")
+		fmt.Println("Command: (\"help\" will print the possible commands)")
 		user_input, err = reader.ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
 		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
 		switch user_input {
-		case "stop":
-			return
+		case "add item":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "add project":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "change id":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "change project":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "delete item":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "delete project":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "help":
+			fmt.Println(commands)
+		case "reload":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "save":
+			fmt.Println("Sorry. This function is not yet implemented.")
 		case "show":
 			fmt.Println(listToString(TodoList))
-		case "hi":
-			fmt.Print("Well hello!" + "\n\n")
+		case "sort":
+			fmt.Println("Sorry. This function is not yet implemented.")
+		case "stop":
+			return
+		case "quit":
+			return
 		case "test":
 			test(&EmptyList, projectname)
 			EmptyList = make([]app_utils.ListItem, 0)
+		case "update item":
+			fmt.Println("Sorry. This function is not yet implemented.")
 		default:
+			fmt.Println("Unrecognized command:")
 			fmt.Println(user_input)
 		}
 	}
