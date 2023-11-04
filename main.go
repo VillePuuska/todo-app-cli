@@ -48,36 +48,54 @@ func main() {
 
 	var user_input string
 	intCheck := regexp.MustCompile("^[0-9]+$")
+	reader := bufio.NewReader(os.Stdin)
 loop:
 	for {
-		reader := bufio.NewReader(os.Stdin)
-		fmt.Println("Give me some input to echo or choose a project with the corresponding integer: (\"stop\" will exit program)")
+		fmt.Println("Choose a project with the corresponding integer: (\"add\" to create new blank project, \"stop\" to exit program)")
 		user_input, err = reader.ReadString('\n')
 		if err != nil {
 			log.Fatal(err)
 		}
-		switch strings.TrimSuffix(strings.ToLower(user_input), "\n") {
-		case "stop":
+		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
+		if user_input == "stop" {
 			return
-		case "hi":
-			fmt.Print("Well hello!" + "\n\n")
-		default:
-			if intCheck.MatchString(strings.TrimSuffix(user_input, "\n")) {
-				project_index, err := strconv.Atoi(strings.TrimSuffix(user_input, "\n"))
-				if err != nil {
-					log.Fatal(err)
-				}
-				if project_index >= 0 && project_index < len(projects) {
-					projectname = projects[project_index]
-					break loop
-				}
+		} else if user_input == "add" {
+			fmt.Println("Sorry. This function is not yet implemented.")
+		} else if intCheck.MatchString(user_input) {
+			project_index, err := strconv.Atoi(user_input)
+			if err != nil {
+				log.Fatal(err)
 			}
-			fmt.Println(user_input)
+			if project_index >= 0 && project_index < len(projects) {
+				projectname = projects[project_index]
+				break loop
+			}
 		}
 	}
 
-	var TodoList []app_utils.ListItem
-	test(&TodoList, projectname)
+	TodoList := app_utils.ReadList(filepath.Join(projectpath, projectname))
+	var EmptyList []app_utils.ListItem
+	for {
+		fmt.Println("Commands: \"show\" will print the list, \"test\" will run tests, \"hi\" greet you back, \"stop\" will exit program, anything else will be echoed")
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
+		switch user_input {
+		case "stop":
+			return
+		case "show":
+			fmt.Println(listToString(TodoList))
+		case "hi":
+			fmt.Print("Well hello!" + "\n\n")
+		case "test":
+			test(&EmptyList, projectname)
+			EmptyList = make([]app_utils.ListItem, 0)
+		default:
+			fmt.Println(user_input)
+		}
+	}
 }
 
 func listProjects() *[]string {
