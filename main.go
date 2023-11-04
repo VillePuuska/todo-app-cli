@@ -47,7 +47,7 @@ func main() {
 	}
 
 	var user_input string
-	intCheck := regexp.MustCompile("^[0-9]")
+	intCheck := regexp.MustCompile("^[0-9]+$")
 loop:
 	for {
 		reader := bufio.NewReader(os.Stdin)
