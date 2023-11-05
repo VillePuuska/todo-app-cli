@@ -120,7 +120,10 @@ func chooseProject() string {
 		if user_input == "stop" {
 			os.Exit(0)
 		} else if user_input == "add" {
-			fmt.Println("Sorry. This function is not yet implemented.")
+			projectName := addProject()
+			if projectName != "" {
+				return projectName + fileextension
+			}
 		} else if intCheck.MatchString(user_input) {
 			project_index, err := strconv.Atoi(user_input)
 			if err != nil {
@@ -150,6 +153,37 @@ func listProjects() []string {
 		}
 	}
 	return projects
+}
+
+func addProject() string {
+	nameCheck := regexp.MustCompile("^[A-Za-z_]+$")
+	reader := bufio.NewReader(os.Stdin)
+	var user_input string
+	var err error
+	for {
+		fmt.Println(`Choose a name for the new project (only characters A-Z, a-z and _ are allowed, "stop" returns without adding a new project):`)
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
+		if user_input == "stop" {
+			return ""
+		} else if nameCheck.MatchString(user_input) {
+			_, err := os.Stat(filepath.Join(projectpath, user_input+fileextension))
+			if err == nil {
+				fmt.Println("Project already exists.")
+			} else if os.IsNotExist(err) {
+				emptyList := make([]app_utils.ListItem, 0)
+				app_utils.SaveList(&emptyList, filepath.Join(projectpath, user_input+fileextension))
+				return user_input
+			} else {
+				log.Fatal(err)
+			}
+		} else {
+			fmt.Println("Invalid name.")
+		}
+	}
 }
 
 func test(projectname string) {
