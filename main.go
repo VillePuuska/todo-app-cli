@@ -34,8 +34,6 @@ const commands = `Possible commands:
 "update item" lets you update the status of an item`
 
 func main() {
-	var projectname string
-
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
 		fmt.Println("Missing folder for projects. Creating it.")
@@ -52,44 +50,11 @@ func main() {
 		log.Fatal(err)
 	}
 
-	files := listProjects()
-	projects := make([]string, 0)
-	for _, project := range *files {
-		if strings.HasSuffix(project, fileextension) {
-			projects = append(projects, project)
-			fmt.Println(len(projects)-1, project)
-		}
-	}
+	projectname := chooseProject()
+	TodoList := app_utils.ReadList(filepath.Join(projectpath, projectname))
 
 	var user_input string
-	intCheck := regexp.MustCompile("^[0-9]+$")
 	reader := bufio.NewReader(os.Stdin)
-loop:
-	for {
-		fmt.Println("Choose a project with the corresponding integer: (\"add\" to create new blank project, \"stop\" to exit program)")
-		user_input, err = reader.ReadString('\n')
-		if err != nil {
-			log.Fatal(err)
-		}
-		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
-		if user_input == "stop" {
-			return
-		} else if user_input == "add" {
-			fmt.Println("Sorry. This function is not yet implemented.")
-		} else if intCheck.MatchString(user_input) {
-			project_index, err := strconv.Atoi(user_input)
-			if err != nil {
-				log.Fatal(err)
-			}
-			if project_index >= 0 && project_index < len(projects) {
-				projectname = projects[project_index]
-				break loop
-			}
-		}
-	}
-
-	TodoList := app_utils.ReadList(filepath.Join(projectpath, projectname))
-	var EmptyList []app_utils.ListItem
 	for {
 		fmt.Println("Command: (\"help\" will print the possible commands)")
 		user_input, err = reader.ReadString('\n')
@@ -125,8 +90,7 @@ loop:
 		case "quit":
 			return
 		case "test":
-			test(&EmptyList, projectname)
-			EmptyList = make([]app_utils.ListItem, 0)
+			test(projectname)
 		case "update item":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		default:
@@ -136,7 +100,40 @@ loop:
 	}
 }
 
-func listProjects() *[]string {
+func chooseProject() string {
+	projects := listProjects()
+	for i, project := range projects {
+		fmt.Println(i, project)
+	}
+
+	intCheck := regexp.MustCompile("^[0-9]+$")
+	reader := bufio.NewReader(os.Stdin)
+	var user_input string
+	var err error
+	for {
+		fmt.Println("Choose a project with the corresponding integer: (\"add\" to create new blank project, \"stop\" to exit program)")
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
+		if user_input == "stop" {
+			os.Exit(0)
+		} else if user_input == "add" {
+			fmt.Println("Sorry. This function is not yet implemented.")
+		} else if intCheck.MatchString(user_input) {
+			project_index, err := strconv.Atoi(user_input)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if project_index >= 0 && project_index < len(projects) {
+				return projects[project_index]
+			}
+		}
+	}
+}
+
+func listProjects() []string {
 	f, err := os.Open(projectpath)
 	if err != nil {
 		log.Fatal(err)
@@ -146,21 +143,28 @@ func listProjects() *[]string {
 	if err != nil {
 		log.Fatal(err)
 	}
-	return &res
+	projects := make([]string, 0)
+	for _, project := range res {
+		if strings.HasSuffix(project, fileextension) {
+			projects = append(projects, project)
+		}
+	}
+	return projects
 }
 
-func test(TodoList *[]app_utils.ListItem, projectname string) {
+func test(projectname string) {
 	fmt.Println("Loading chosen project.")
 	fmt.Println(listToString(app_utils.ReadList(filepath.Join(projectpath, projectname))))
 
+	TodoList := make([]app_utils.ListItem, 0)
 	fmt.Println("Adding items to list.")
 	for i := 0; i < 4; i++ {
-		app_utils.AddItem("Test list item "+strconv.Itoa(i), TodoList)
+		app_utils.AddItem("Test list item "+strconv.Itoa(i), &TodoList)
 		if i != 3 {
 			time.Sleep(time.Second)
 		}
 	}
-	fmt.Println(listToString(TodoList))
+	fmt.Println(listToString(&TodoList))
 
 	fmt.Println("Marshaling and Unmarshaling the list.")
 	marshaled, _ := json.Marshal(TodoList)
@@ -170,21 +174,21 @@ func test(TodoList *[]app_utils.ListItem, projectname string) {
 	fmt.Println(listToString(&unmarshaled))
 
 	fmt.Println("Testing updating status.")
-	app_utils.UpdateStatus(0, "asd", TodoList)
-	fmt.Println(listToString(TodoList))
-	app_utils.UpdateStatus(0, "done", TodoList)
-	fmt.Println(listToString(TodoList))
-	app_utils.UpdateStatus(1, "working on", TodoList)
-	fmt.Println(listToString(TodoList))
-	app_utils.UpdateStatus(2, "done", TodoList)
-	fmt.Println(listToString(TodoList))
+	app_utils.UpdateStatus(0, "asd", &TodoList)
+	fmt.Println(listToString(&TodoList))
+	app_utils.UpdateStatus(0, "done", &TodoList)
+	fmt.Println(listToString(&TodoList))
+	app_utils.UpdateStatus(1, "working on", &TodoList)
+	fmt.Println(listToString(&TodoList))
+	app_utils.UpdateStatus(2, "done", &TodoList)
+	fmt.Println(listToString(&TodoList))
 
 	fmt.Println("Testing deleting an item.")
-	app_utils.DeleteItem(0, TodoList)
-	fmt.Println(listToString(TodoList))
+	app_utils.DeleteItem(0, &TodoList)
+	fmt.Println(listToString(&TodoList))
 
 	fmt.Println("Saving and loading the list.")
-	app_utils.SaveList(TodoList, filepath.Join(projectpath, projectname))
+	app_utils.SaveList(&TodoList, filepath.Join(projectpath, projectname))
 	readList := app_utils.ReadList(filepath.Join(projectpath, projectname))
 	fmt.Println(listToString(readList))
 
