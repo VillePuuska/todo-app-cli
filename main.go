@@ -206,7 +206,10 @@ func addProject() string {
 }
 
 func archiveProject(projectname string) {
-	err := os.Rename(filepath.Join(projectpath, projectname), filepath.Join(archivepath, projectname))
+	err := os.Rename(filepath.Join(projectpath, projectname), filepath.Join(archivepath,
+		strings.TrimSuffix(projectname, fileextension)+
+			strings.Replace(time.Now().Format("0601021505.000000"), ".", "", 1)+
+			fileextension))
 	if err != nil {
 		log.Fatal(err)
 	}
