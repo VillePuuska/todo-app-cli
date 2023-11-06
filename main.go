@@ -19,9 +19,8 @@ const projectpath = "todo-app-cli-projects"
 const fileextension = ".json"
 const commands = `Possible commands:
 "add item" lets you add an item to the current project,
-"add project" creates a new blank project and switches to it,
 "change id" lets your change the id of an item in the current list, use this to manually order items,
-"change project" lets you change the current project/todo-list,
+"change project" lets you change the current project/todo-list or create a new blank one,
 "delete item" lets you delete an item from the current project,
 "delete project" lets you delete any of the projects in the project-folder,
 "help" will print this message,
@@ -65,12 +64,11 @@ func main() {
 		switch user_input {
 		case "add item":
 			fmt.Println("Sorry. This function is not yet implemented.")
-		case "add project":
-			fmt.Println("Sorry. This function is not yet implemented.")
 		case "change id":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		case "change project":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			projectname = chooseProject()
+			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
 		case "delete item":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		case "delete project":
