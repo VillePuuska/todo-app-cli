@@ -16,6 +16,9 @@ import (
 )
 
 const projectpath = "todo-app-cli-projects"
+
+var archivepath string = filepath.Join(projectpath, "archive")
+
 const fileextension = ".json"
 const commands = `Possible commands:
 "add item" lets you add an item to the current project,
@@ -44,7 +47,22 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		fmt.Println("Path to folder:", absolute_path)
+		fmt.Println("Path to projects folder:", absolute_path)
+	} else if err != nil {
+		log.Fatal(err)
+	}
+	_, err = os.Stat(archivepath)
+	if os.IsNotExist(err) {
+		fmt.Println("Missing folder for archiving projects. Creating it.")
+		err := os.Mkdir(archivepath, 0750)
+		if err != nil {
+			log.Fatal(err)
+		}
+		absolute_path, err := filepath.Abs(archivepath)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("Path to archive folder:", absolute_path)
 	} else if err != nil {
 		log.Fatal(err)
 	}
@@ -72,7 +90,10 @@ func main() {
 		case "delete item":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		case "delete project":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			fmt.Println("Archiving current project. To completely delete it, delete the .json file from the archive folder.")
+			archiveProject(projectname)
+			projectname = chooseProject()
+			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
 		case "help":
 			fmt.Println(commands)
 		case "reload":
@@ -184,6 +205,18 @@ func addProject() string {
 	}
 }
 
+func archiveProject(projectname string) {
+
+}
+
+func listToString(TodoList *[]app_utils.ListItem) string {
+	res := ""
+	for _, item := range *TodoList {
+		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + " " + item.Started.String() + " " + item.Finished.String() + "\n"
+	}
+	return res
+}
+
 func test(projectname string) {
 	fmt.Println("Loading chosen project.")
 	fmt.Println(listToString(app_utils.ReadList(filepath.Join(projectpath, projectname))))
@@ -247,12 +280,4 @@ func test(projectname string) {
 	fmt.Println(listToString(readList))
 
 	app_utils.SaveList(readList, filepath.Join(projectpath, "sorting_"+projectname))
-}
-
-func listToString(TodoList *[]app_utils.ListItem) string {
-	res := ""
-	for _, item := range *TodoList {
-		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + " " + item.Started.String() + " " + item.Finished.String() + "\n"
-	}
-	return res
 }
