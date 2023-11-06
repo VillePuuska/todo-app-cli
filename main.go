@@ -206,7 +206,10 @@ func addProject() string {
 }
 
 func archiveProject(projectname string) {
-
+	err := os.Rename(filepath.Join(projectpath, projectname), filepath.Join(archivepath, projectname))
+	if err != nil {
+		log.Fatal(err)
+	}
 }
 
 func listToString(TodoList *[]app_utils.ListItem) string {
