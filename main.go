@@ -122,7 +122,7 @@ func main() {
 func chooseProject() string {
 	projects := listProjects()
 	for i, project := range projects {
-		fmt.Println(i, project)
+		fmt.Println(i, strings.TrimSuffix(project, ".json"))
 	}
 
 	intCheck := regexp.MustCompile("^[0-9]+$")
