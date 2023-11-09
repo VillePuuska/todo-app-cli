@@ -83,7 +83,7 @@ func main() {
 		case "add item":
 			addItem(TodoList)
 		case "change id":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			changeId(TodoList)
 		case "change project":
 			projectname = chooseProject()
 			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
@@ -233,6 +233,46 @@ func archiveProject(projectname string) {
 			fileextension))
 	if err != nil {
 		log.Fatal(err)
+	}
+}
+
+func changeId(TodoList *[]app_utils.ListItem) {
+	intCheck := regexp.MustCompile("^[0-9]+$")
+	reader := bufio.NewReader(os.Stdin)
+	var user_input_1, user_input_2 string
+	var err error
+	for {
+		fmt.Println("Id of the item: (\"stop\" will return without changing id's)")
+		user_input_1, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input_1 = strings.TrimSuffix(strings.ToLower(user_input_1), "\n")
+		if user_input_1 == "stop" {
+			return
+		}
+		fmt.Println("New id for the item: (\"stop\" will return without changing id's)")
+		user_input_2, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input_2 = strings.TrimSuffix(strings.ToLower(user_input_2), "\n")
+		if user_input_2 == "stop" {
+			return
+		}
+		if intCheck.MatchString(user_input_1) && intCheck.MatchString(user_input_2) {
+			old_id, err := strconv.Atoi(user_input_1)
+			if err != nil {
+				log.Fatal(err)
+			}
+			new_id, err := strconv.Atoi(user_input_2)
+			if err != nil {
+				log.Fatal(err)
+			}
+			app_utils.ChangeId(old_id, new_id, TodoList)
+			return
+		}
+		fmt.Println("Invalid input! Id's are numbers.")
 	}
 }
 
