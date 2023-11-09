@@ -81,7 +81,7 @@ func main() {
 		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
 		switch user_input {
 		case "add item":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			addItem(TodoList)
 		case "change id":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		case "change project":
@@ -201,6 +201,27 @@ func addProject() string {
 			}
 		} else {
 			fmt.Println("Invalid name.")
+		}
+	}
+}
+
+func addItem(TodoList *[]app_utils.ListItem) {
+	reader := bufio.NewReader(os.Stdin)
+	var user_input string
+	var err error
+	for {
+		fmt.Println(`Give a description for the item: ("stop" stops adding new items):`)
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.TrimSuffix(user_input, "\n")
+		if user_input == "stop" {
+			return
+		} else if user_input == "" {
+			fmt.Println("Invalid name.")
+		} else {
+			app_utils.AddItem(user_input, TodoList)
 		}
 	}
 }
