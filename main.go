@@ -97,7 +97,7 @@ func main() {
 		case "help":
 			fmt.Println(commands)
 		case "reload":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
 		case "save":
 			fmt.Println("Sorry. This function is not yet implemented.")
 		case "show":
