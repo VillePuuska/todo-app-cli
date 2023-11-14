@@ -99,7 +99,7 @@ func main() {
 		case "reload":
 			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
 		case "save":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			app_utils.SaveList(TodoList, filepath.Join(projectpath, projectname))
 		case "show":
 			fmt.Println(listToString(TodoList))
 		case "sort":
