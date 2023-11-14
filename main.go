@@ -35,6 +35,8 @@ const commands = `Possible commands:
 "test" runs the hardcoded tests,
 "update item" lets you update the status of an item`
 
+var sorting_fields []string = []string{"ID", "DESCRIPTION", "STATUS", "ADDED", "STARTED", "FINISHED"}
+
 func main() {
 	_, err := os.Stat(projectpath)
 	if os.IsNotExist(err) {
@@ -103,7 +105,7 @@ func main() {
 		case "show":
 			fmt.Println(listToString(TodoList))
 		case "sort":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			sortList(TodoList)
 		case "stop":
 			return
 		case "quit":
@@ -282,6 +284,34 @@ func listToString(TodoList *[]app_utils.ListItem) string {
 		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + " " + item.Started.String() + " " + item.Finished.String() + "\n"
 	}
 	return res
+}
+
+func sortList(TodoList *[]app_utils.ListItem) {
+	reader := bufio.NewReader(os.Stdin)
+	var user_input string
+	var err error
+	for {
+		fmt.Println("Possible fields to sort by:", sorting_fields)
+		fmt.Println(`Choose field to sort by: ("stop" returns without sorting):`)
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.ToUpper(strings.TrimSuffix(user_input, "\n"))
+		i := 0
+		for i < len(sorting_fields) {
+			if user_input == sorting_fields[i] {
+				break
+			}
+			i++
+		}
+		if i < len(sorting_fields) {
+			app_utils.OrderList(user_input, TodoList)
+			return
+		} else {
+			fmt.Println("Invalid field!")
+		}
+	}
 }
 
 func test(projectname string) {
