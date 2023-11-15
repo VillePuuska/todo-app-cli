@@ -90,7 +90,7 @@ func main() {
 			projectname = chooseProject()
 			TodoList = app_utils.ReadList(filepath.Join(projectpath, projectname))
 		case "delete item":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			deleteItem(TodoList)
 		case "delete project":
 			fmt.Println("Archiving current project. To completely delete it, delete the .json file from the archive folder.")
 			archiveProject(projectname)
@@ -275,6 +275,38 @@ func changeId(TodoList *[]app_utils.ListItem) {
 			return
 		}
 		fmt.Println("Invalid input! Id's are numbers.")
+	}
+}
+
+func deleteItem(TodoList *[]app_utils.ListItem) {
+	intCheck := regexp.MustCompile("^[0-9]+$")
+	reader := bufio.NewReader(os.Stdin)
+	var user_input string
+	var err error
+	for {
+		fmt.Println("Delete an item by entering the corresponding id: (\"stop\" will return)")
+		user_input, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input = strings.TrimSuffix(strings.ToLower(user_input), "\n")
+		if user_input == "stop" {
+			return
+		} else if intCheck.MatchString(user_input) {
+			item_id, err := strconv.Atoi(user_input)
+			if err != nil {
+				log.Fatal(err)
+			}
+			if item_id >= 0 && item_id < len(*TodoList) {
+				app_utils.DeleteItem(item_id, TodoList)
+				return
+			} else {
+				fmt.Println("Index out of bounds.")
+			}
+		} else {
+			fmt.Println("Unrecognized command:")
+			fmt.Println(user_input)
+		}
 	}
 }
 
