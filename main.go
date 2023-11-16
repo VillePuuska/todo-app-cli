@@ -274,7 +274,7 @@ func changeId(TodoList *[]app_utils.ListItem) {
 			app_utils.ChangeId(old_id, new_id, TodoList)
 			return
 		}
-		fmt.Println("Invalid input! Id's are numbers.")
+		fmt.Println("Invalid input! Id's must be numbers.")
 	}
 }
 
