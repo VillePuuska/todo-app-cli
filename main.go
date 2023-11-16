@@ -113,7 +113,7 @@ func main() {
 		case "test":
 			test(projectname)
 		case "update item":
-			fmt.Println("Sorry. This function is not yet implemented.")
+			updateItem(TodoList)
 		default:
 			fmt.Println("Unrecognized command:")
 			fmt.Println(user_input)
@@ -297,7 +297,7 @@ func deleteItem(TodoList *[]app_utils.ListItem) {
 			if err != nil {
 				log.Fatal(err)
 			}
-			if item_id >= 0 && item_id < len(*TodoList) {
+			if item_id < len(*TodoList) {
 				app_utils.DeleteItem(item_id, TodoList)
 				return
 			} else {
@@ -343,6 +343,48 @@ func sortList(TodoList *[]app_utils.ListItem) {
 		} else {
 			fmt.Println("Invalid field!")
 		}
+	}
+}
+
+func updateItem(TodoList *[]app_utils.ListItem) {
+	intCheck := regexp.MustCompile("^[0-9]+$")
+	reader := bufio.NewReader(os.Stdin)
+	var user_input_1, user_input_2 string
+	var item_id int
+	var err error
+	for {
+		fmt.Println("Id of the item: (\"stop\" will return without changing id's)")
+		user_input_1, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input_1 = strings.TrimSuffix(strings.ToLower(user_input_1), "\n")
+		if user_input_1 == "stop" {
+			return
+		}
+		if !intCheck.MatchString(user_input_1) {
+			fmt.Println("Id must be a number!")
+			continue
+		}
+		item_id, err = strconv.Atoi(user_input_1)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("New status for the item: backlog, working on, done (\"stop\" will return without changing id's)")
+		user_input_2, err = reader.ReadString('\n')
+		if err != nil {
+			log.Fatal(err)
+		}
+		user_input_2 = strings.TrimSuffix(strings.ToLower(user_input_2), "\n")
+		if user_input_2 == "stop" {
+			return
+		}
+		if user_input_2 != "backlog" && user_input_2 != "working on" && user_input_2 != "done" {
+			fmt.Println("Invalid new status!")
+			continue
+		}
+		app_utils.UpdateStatus(item_id, user_input_2, TodoList)
+		return
 	}
 }
 
