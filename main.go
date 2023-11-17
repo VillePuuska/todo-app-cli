@@ -307,9 +307,25 @@ func deleteItem(TodoList *[]app_utils.ListItem) {
 }
 
 func listToString(TodoList *[]app_utils.ListItem) string {
-	res := ""
+	var id_str string
+	desc_len := 0
 	for _, item := range *TodoList {
-		res += strconv.Itoa(item.Id) + " " + item.Description + " " + item.Status + " " + item.Added.String() + " " + item.Started.String() + " " + item.Finished.String() + "\n"
+		if len(item.Description) > desc_len {
+			desc_len = len(item.Description)
+		}
+	}
+	res := "Id | " + "Description" + strings.Repeat(" ", desc_len-11) + " | Status"
+	res += " | Added \t\t\t\t\t| Started \t\t\t\t\t| Finished \t\t\t\t\t|\n"
+	for _, item := range *TodoList {
+		id_str = strconv.Itoa(item.Id)
+		res += id_str + strings.Repeat(" ", 3-len(id_str)) + "| " + item.Description + strings.Repeat(" ", desc_len-len(item.Description)) + " | " + item.Status
+		if item.Status == "done" {
+			res += "\t"
+		}
+		res += "\t| " + item.Added.String() + "\t| "
+		res += item.Started.String()
+		res += "\t| " + item.Finished.String()
+		res += "\t|\n"
 	}
 	return res
 }
