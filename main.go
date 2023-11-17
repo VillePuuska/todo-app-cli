@@ -2,7 +2,6 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os"
@@ -32,7 +31,6 @@ const commands = `Possible commands:
 "show" prints the todo-list,
 "sort" lets you order the list by any attribute,
 "stop" or "quit" quits the app,
-"test" runs the hardcoded tests,
 "update item" lets you update the status of an item`
 
 var sorting_fields []string = []string{"ID", "DESCRIPTION", "STATUS", "ADDED", "STARTED", "FINISHED"}
@@ -110,8 +108,6 @@ func main() {
 			return
 		case "quit":
 			return
-		case "test":
-			test(projectname)
 		case "update item":
 			updateItem(TodoList)
 		default:
@@ -386,69 +382,4 @@ func updateItem(TodoList *[]app_utils.ListItem) {
 		app_utils.UpdateStatus(item_id, user_input_2, TodoList)
 		return
 	}
-}
-
-func test(projectname string) {
-	fmt.Println("Loading chosen project.")
-	fmt.Println(listToString(app_utils.ReadList(filepath.Join(projectpath, projectname))))
-
-	TodoList := make([]app_utils.ListItem, 0)
-	fmt.Println("Adding items to list.")
-	for i := 0; i < 4; i++ {
-		app_utils.AddItem("Test list item "+strconv.Itoa(i), &TodoList)
-		if i != 3 {
-			time.Sleep(time.Second)
-		}
-	}
-	fmt.Println(listToString(&TodoList))
-
-	fmt.Println("Marshaling and Unmarshaling the list.")
-	marshaled, _ := json.Marshal(TodoList)
-	fmt.Println(string(marshaled))
-	var unmarshaled []app_utils.ListItem
-	json.Unmarshal([]byte(marshaled), &unmarshaled)
-	fmt.Println(listToString(&unmarshaled))
-
-	fmt.Println("Testing updating status.")
-	app_utils.UpdateStatus(0, "asd", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(0, "done", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(1, "working on", &TodoList)
-	fmt.Println(listToString(&TodoList))
-	app_utils.UpdateStatus(2, "done", &TodoList)
-	fmt.Println(listToString(&TodoList))
-
-	fmt.Println("Testing deleting an item.")
-	app_utils.DeleteItem(0, &TodoList)
-	fmt.Println(listToString(&TodoList))
-
-	fmt.Println("Saving and loading the list.")
-	app_utils.SaveList(&TodoList, filepath.Join(projectpath, projectname))
-	readList := app_utils.ReadList(filepath.Join(projectpath, projectname))
-	fmt.Println(listToString(readList))
-
-	fmt.Println("Testing changing id.")
-	app_utils.ChangeId(0, 4, readList)
-	fmt.Println(listToString(readList))
-	app_utils.ChangeId(0, 2, readList)
-	fmt.Println(listToString(readList))
-	app_utils.ChangeId(2, 1, readList)
-	fmt.Println(listToString(readList))
-
-	fmt.Println("Testing sorting.")
-	app_utils.OrderList("asd", readList)
-	fmt.Println(listToString(readList))
-	app_utils.OrderList("id", readList)
-	fmt.Println(listToString(readList))
-	app_utils.OrderList("description", readList)
-	fmt.Println(listToString(readList))
-	app_utils.OrderList("status", readList)
-	fmt.Println(listToString(readList))
-	app_utils.OrderList("added", readList)
-	fmt.Println(listToString(readList))
-	app_utils.OrderList("finished", readList)
-	fmt.Println(listToString(readList))
-
-	app_utils.SaveList(readList, filepath.Join(projectpath, "sorting_"+projectname))
 }
